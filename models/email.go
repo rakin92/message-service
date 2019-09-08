@@ -1,7 +1,6 @@
 package models
 
 import (
-	"os"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -9,6 +8,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"github.com/spf13/viper"
 
 	// gorm postgres dialect
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -80,7 +80,7 @@ func (e Email) dynamicTemplateEmailBody() []byte {
 
 // SendSendgridEmail : sends a email
 func (e Email) SendSendgridEmail() error {
-	request := sendgrid.GetRequest(os.Getenv("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
+	request := sendgrid.GetRequest(viper.GetString("SENDGRID_API_KEY"), "/v3/mail/send", "https://api.sendgrid.com")
 	request.Method = "POST"
 
 	if e.TemplateID != "" {
