@@ -16,7 +16,7 @@ func SendEmail(c *gin.Context) {
 	body, err := ioutil.ReadAll(c.Request.Body)
 
 	if err != nil {
-		log.Error("Error reading request body to get rate estimates")
+		log.Error("Error reading request body")
 	}
 
 	var newEmail = models.Email{
