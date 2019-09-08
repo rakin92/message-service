@@ -1,11 +1,8 @@
 package models
 
 import (
-	"time"
-
 	"github.com/jinzhu/gorm"
 	"github.com/rakin92/message-service/database"
-	uuid "github.com/satori/go.uuid"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"github.com/spf13/viper"
@@ -14,14 +11,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	log "github.com/sirupsen/logrus"
 )
-
-// Base : gorm.Model definition
-type Base struct {
-	ID        uuid.UUID `gorm:"type:uuid;primary_key"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time
-}
 
 // Email : Base with injected fields `ID`, `CreatedAt`, `UpdatedAt`
 type Email struct {
@@ -35,13 +24,6 @@ type Email struct {
 	Subject     string             `grom:"type:varchar(256)"`
 	Message     string             `grom:"type:varchar"`
 	DynamicData *map[string]string `grom:"type:json"`
-}
-
-// BeforeCreate will set a UUID rather than numeric ID.
-func (base *Base) BeforeCreate(scope *gorm.Scope) error {
-	uuid := uuid.NewV4()
-
-	return scope.SetColumn("ID", uuid)
 }
 
 func (e Email) plainTextEmailBody() []byte {

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/jinzhu/gorm"
+	"github.com/rakin92/message-service/database"
 	"github.com/spf13/viper"
 
 	// gorm postgres dialect
@@ -24,16 +25,18 @@ type SMS struct {
 	TwilioID   string `grom:"type:varchar(256)"`
 }
 
-func (s SMS) prepareMessage() []byte {
+func (s SMS) prepareMessage() url.Values {
 	// Pack up the data for our message
 	msgData := url.Values{}
 	msgData.Set("To", s.ToNumber)
 	msgData.Set("From", s.FromNumber)
 	msgData.Set("Body", s.Message)
-	msgDataReader := *strings.NewReader(msgData.Encode())
+
+	return msgData
+
 }
 
-// SendTwilioSMS : sends a email
+// SendTwilioSMS : sends a sms
 func (s SMS) SendTwilioSMS() error {
 	accountSid := viper.GetString("SENDGRID_API_KEY")
 	authToken := viper.GetString("SENDGRID_API_KEY")
@@ -41,10 +44,12 @@ func (s SMS) SendTwilioSMS() error {
 	urlStr := fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", accountSid)
 
 	// Create HTTP request client
-	message := s.prepareMessage()
+	msgData := s.prepareMessage()
+	msgDataReader := *strings.NewReader(msgData.Encode())
+
 	client := &http.Client{}
 
-	req, _ := http.NewRequest("POST", urlStr, &message)
+	req, _ := http.NewRequest("POST", urlStr, &msgDataReader)
 	req.SetBasicAuth(accountSid, authToken)
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
@@ -65,7 +70,7 @@ func (s SMS) SendTwilioSMS() error {
 
 		if err == nil {
 			s.Status = "SENT"
-			s.TwilioID = data["sid"])
+			s.TwilioID = fmt.Sprint(data["sid"])
 			database.DB.Save(&s)
 		}
 	}

@@ -3,7 +3,9 @@ package main
 import (
 	"github.com/rakin92/message-service/config"
 	"github.com/rakin92/message-service/database"
+	"github.com/rakin92/message-service/email"
 	"github.com/rakin92/message-service/migration"
+	"github.com/rakin92/message-service/sms"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,11 +26,11 @@ func main() {
 
 	r := config.SetupRouter()
 
-	email := r.Group("/email")
-	email.POST("/send", email.SendEmail)
+	emailAPI := r.Group("/email")
+	emailAPI.POST("/send", email.SendEmail)
 
-	sms := r.Group("/sms")
-	sms.POST("/send", sms.SendSMS)
+	smsAPI := r.Group("/sms")
+	smsAPI.POST("/send", sms.SendSMS)
 
 	log.Info("running on port 8081")
 	r.Run(":8081")
