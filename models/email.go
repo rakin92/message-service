@@ -17,13 +17,13 @@ import (
 
 // Base : gorm.Model definition
 type Base struct {
-	UUID      uuid.UUID `gorm:"type:uuid;primary_key"`
+	ID        uuid.UUID `gorm:"type:uuid;primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
 }
 
-// Email : Base with injected fields `UUID`, `CreatedAt`, `UpdatedAt`
+// Email : Base with injected fields `ID`, `CreatedAt`, `UpdatedAt`
 type Email struct {
 	gorm.Model
 	Status      string             `grom:"type:varchar(32);not null"`
@@ -41,7 +41,7 @@ type Email struct {
 func (base *Base) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.NewV4()
 
-	return scope.SetColumn("uuid", uuid)
+	return scope.SetColumn("ID", uuid)
 }
 
 func (e Email) plainTextEmailBody() []byte {
