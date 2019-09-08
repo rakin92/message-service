@@ -1,0 +1,116 @@
+swagger: '2.0'
+info:
+  description: |
+    Messaging Service
+
+    [Learn about Swagger](http://swagger.wordnik.com) or join the IRC channel '#swagger' on irc.freenode.net.
+
+    For this sample, you can use the api key 'special-key' to test the authorization filters
+  version: 1.0.0
+  title: Message Service
+  termsOfService: ''
+  contact:
+    name: sampleemail@sampleemail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: localhost:8080
+basePath: /v2
+schemes:
+  - http
+  - https
+paths:
+  /emails/send_email_template:
+    post:
+      tags:
+        - Email
+      summary: Sends a templated email
+      description: ''
+      operationId: addPet
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Email template with data that needs to be sent.
+          required: true
+          schema:
+            $ref: '#/definitions/EmailData'
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/ResponseData'
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []
+        - petstore_auth:
+          - write
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+  petstore_auth:
+    type: oauth2
+    authorizationUrl: 'http://localhost:8080/api/oauth'
+    flow: implicit
+    scopes:
+      write: write data
+      read: read data
+definitions:
+  ResponseData:
+    required:
+      - code
+      - status
+      - message
+      - body
+    properties:
+      code:
+        type: integer
+        example: 200
+      status:
+        type: string
+        example: Ok
+      message:
+        type: string
+        example: Successfully sent email
+      data:
+        type: object
+      error:
+        type: object
+  EmailData:
+    required:
+      - fromName
+      - toName
+      - fromEmail
+      - toEmail
+      - subject
+    properties:
+      fromName:
+        type: string
+        example: John
+      toName:
+        type: string
+        example: Adam
+      fromEmail:
+        type: string
+        example: john@samplemail.com
+      toEmail:
+        type: string
+        description: adam@sampleemail.com
+      subject:
+        type: string
+        example: Welcome To Email
+      message:
+        type: string
+        example: Hello World
+      templateID:
+        type: string
+        example: 51d15c4b-9555-4815-8e24-9b7f5e558d79
+      data:
+        type: object
+        example: {'firstName': 'John'}

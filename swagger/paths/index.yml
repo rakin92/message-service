@@ -1,0 +1,4 @@
+/healthcheck:
+  $ref: ./healthcheck/index.yml
+/email/send_email_template:
+  $ref: ./email/template_email.yml

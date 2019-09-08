@@ -1,0 +1,32 @@
+post:
+  tags:
+    - Email
+  summary: Sends a templated email
+  description: ''
+  operationId: addPet
+  consumes:
+    - application/json
+  produces:
+    - application/json
+  parameters:
+    - in: body
+      name: body
+      description: Email template with data that needs to be sent.
+      required: true
+      schema:
+        $ref: '#/definitions/EmailData'
+  responses:
+    200:
+      description: Success
+      schema:
+        $ref: '#/definitions/ResponseData'
+    401:
+      description: "unauthorised"
+    default:
+      description: "generic error response"
+      schema:
+        $ref: "#/definitions/ResponseData"
+  security:
+    - api_key: []
+    - petstore_auth:
+      - write
