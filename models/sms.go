@@ -13,6 +13,7 @@ import (
 
 	// gorm postgres dialect
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	log "github.com/sirupsen/logrus"
 )
 
 // SMS : Base with injected fields `ID`, `CreatedAt`, `UpdatedAt`
@@ -38,11 +39,12 @@ func (s SMS) prepareMessage() url.Values {
 
 // SendTwilioSMS : sends a sms
 func (s SMS) SendTwilioSMS() error {
-	accountSid := viper.GetString("SENDGRID_API_KEY")
-	authToken := viper.GetString("SENDGRID_API_KEY")
+	accountSid := viper.GetString("TWILIO_ACCOUNT_SID")
+	authToken := viper.GetString("TWILIO_AUTH_TOKEN")
 
 	urlStr := fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", accountSid)
 
+	log.Info(urlStr)
 	// Create HTTP request client
 	msgData := s.prepareMessage()
 	msgDataReader := *strings.NewReader(msgData.Encode())
@@ -54,8 +56,12 @@ func (s SMS) SendTwilioSMS() error {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
+	log.Info(req)
+
 	// Make HTTP POST request and return message SID
 	resp, err := client.Do(req)
+
+	log.Info(resp)
 
 	if err != nil {
 		s.Status = "FAILED"

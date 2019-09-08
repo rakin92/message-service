@@ -7,6 +7,6 @@ import (
 
 // Migrate : will create and migrate the tables, and then make the some relationships if necessary
 func Migrate(db *gorm.DB) *gorm.DB {
-	db.AutoMigrate(&models.Email{})
+	db.AutoMigrate(&models.Email{}, &models.SMS{})
 	return db
 }

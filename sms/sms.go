@@ -38,6 +38,6 @@ func SendSMS(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)
 	} else {
-		c.JSON(http.StatusOK, "Successfully sent email")
+		c.JSON(http.StatusOK, "Successfully sent sms")
 	}
 }
